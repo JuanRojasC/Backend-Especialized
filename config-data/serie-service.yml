@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-      username: series_databse
+      username: series_database
       password: series
       database: series
       port: 27018

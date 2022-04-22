@@ -1,0 +1,89 @@
+spring:
+  data:
+    mongodb:
+      username: catalog
+      password: catalog
+      database: catalog_database
+      port: 27019
+      host: localhost
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+
+queue:
+  movie:
+    name: MovieQueue
+  serie:
+    name: SerieQueue
+
+server:
+  port: 9003
+
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
+    hostname: loclahost
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0
+    description: catalog microservice
+  svc:
+    instanceid: ${eureka.instance.instancei-id}
+    port: ${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - circuitbreakers
+          - circuitbreakerevents
+          - health
+          - info
+          - ratelimiters
+          - metrics
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      showDetails: always
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      movies:
+        allowHealthIndicatorToFail: false
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenenabled: true
+      series:
+        allowHealthIndicatorToFail: false
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 15000
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenenabled: true
+  retry:
+    instances:
+      movies:
+        maxAttempts: 3
+        waitDuration: 1000
+        retryException:
+          - feign.FeignException$InternalServerError

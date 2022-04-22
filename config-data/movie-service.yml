@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/movies
+    username: superuser
+    password: superuser
+  sql:
+    init:
+      mode: always
+      dataLocations: classpath:/movies.sql
+  jpa:
+    deferDatasourceInitialization: true
+    hibernate:
+      ddlAuto: create-drop
+  rabbitmq:
+    username: guest
+    password: guest
+    host: localhost
+    port: 5672
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
+
+queue:
+  movie:
+    name: MovieQueue
+
+server:
+  port: 9001
+
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true
+    hostname: loclahost
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: 1.0.0
+    description: movie microservice
+  svc:
+    instanceid: ${eureka.instance.instancei-id}
+    port: ${server.port}

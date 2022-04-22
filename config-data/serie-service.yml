@@ -1,9 +1,9 @@
 spring:
   data:
     mongodb:
-      username: series_database
+      username: series
       password: series
-      database: series
+      database: series_database
       port: 27018
       host: localhost
   rabbitmq:

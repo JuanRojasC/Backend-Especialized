@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/JuanRojasC/Backend-Especialized
+          search-paths: config-data
+          default-label: master
+
+server:
+  port: 8888

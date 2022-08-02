@@ -1,0 +1,53 @@
+# Configuraciones del servidor
+server:
+  port: 8090
+# Configuraciones de eureka
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+# Configuraciones de spring cloud
+spring:
+  application:
+    name: ms-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - RemoveRequestHeader=Cookie
+      routes:
+        - id: ms-bill
+          uri: lb://ms-bill
+          predicates:
+            - Path=/api/v1/bills/**
+          filters:
+            - StripPrefix=2
+            - TokenRelay
+
+        - id: ms-user
+          uri: lb://ms-user
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - StripPrefix=2
+            - TokenRelay
+  # Security Configuration
+  security:
+    oauth2:
+      client:
+        registration:
+          account-solutions:
+            client-id: billers
+            client-secret: JSRoSCGBaMat44Dvpc1aJNRDR4HH5VNX
+            scope: email, profile, roles
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8090/login/oauth2/code/account-solutions
+        provider:
+          account-solutions:
+            issuer-uri: http://localhost:8080/realms/account-solutions
+            jwt-set-uri: http://localhost:8080/realms/account-solutions/protocol/openid-connect/certs

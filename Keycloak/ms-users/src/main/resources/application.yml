@@ -1,0 +1,37 @@
+dh:
+  keycloak:
+    realm: account-solutions
+    clientId: user-internal
+    clientSecret: HB7nesYkdPPxHs9V67qDoJ4aFWExxlA8
+    serverUrl: http://localhost:8080
+
+spring:
+  application:
+    name: ms-user
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/account-solutions
+          jwk-set-uri: http://localhost:8080/realms/account-solutions/protocol/openid-connect/certs
+      client:
+        registration:
+          user:
+            client-id: ${dh.keycloak.clientId}
+            client-secret: ${dh.keycloak.clientSecret}
+            authorization-grant-type: client_credentials
+        provider:
+          user:
+            issuer-uri: http://localhost:8080/realms/account-solutions
+            jwk-set-uri: http://localhost:8080/realms/account-solutions/protocol/openid-connect/certs
+
+server:
+  port: ${PORT:0}
+
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

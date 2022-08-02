@@ -1,0 +1,49 @@
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+        registration:
+          google:
+            client-id: 837471785775-h1loi09jog0f405clm3cvkrdq8ciiruv.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+              - openid
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        - id: movie-service
+          uri: lb://movie-service
+          predicates:
+            - Path=/movies/**
+        - id: serie-service
+          uri: lb://serie-service
+          predicates:
+            - Path=/series/**
+        - id: catalog-service
+          uri: lb://catalog-service
+          predicates:
+            - Path=/catalog/**
+#      default-filters:
+#        - OIDCTokenRelay
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    preferIpAddress: true

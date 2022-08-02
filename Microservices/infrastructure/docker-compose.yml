@@ -1,0 +1,45 @@
+version: "3.2"
+services:
+  zipking:
+    container_name: zipkin-container
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+  rabbitmq:
+    container_name: rabbitmq-container
+    image: rabbitmq:3-management
+    hostname: my-rabbit
+    ports:
+      - 5672:5672
+      - 15672:15672
+  mysql:
+    container_name: mysql-movies-db
+    image: bitnami/mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      - TZ="UTC"
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}:movies_db
+      - BITNAMI_DEBUG="true"
+    volumes:
+      - ./movies.sql:/docker-entrypoint-initdb.d/init.sql
+  mongodb-series:
+    container_name: mongodb-series
+    image: bitnami/mongodb:latest
+    ports:
+      - 27018:27018
+    environment:
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_PORT_NUMBER=27018
+    volumes:
+      - ./series.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  mongodb-catalog:
+    container_name: mongodb-catalog
+    image: bitnami/mongodb:latest
+    ports:
+      - 27019:27019
+    environment:
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_PORT_NUMBER=27019
+    volumes:
+      - ./catalog.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
